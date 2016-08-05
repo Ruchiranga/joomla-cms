@@ -43,65 +43,64 @@
 		}
 	});
 
-	$(document).ready(function () {
-
-		// Tooltip maximal dimensions for intelligent placement:
-		var actualWidth = 200;
-		var actualHeight = 100;
-		// Tooltip smart tooltip placement function:
-		var tooltipPlacer = function(tip, element) {
-			var $element, above, below, boundBottom, boundLeft, boundRight, boundTop, elementAbove, elementBelow, elementLeft, elementRight, isWithinBounds, left, pos, right;
-			isWithinBounds = function(elementPosition) {
-				return boundTop < elementPosition.top && boundLeft < elementPosition.left && boundRight > (elementPosition.left + actualWidth) && boundBottom > (elementPosition.top + actualHeight);
-			};
-			$element = $(element);
-			pos = $.extend({}, $element.offset(), {
-				width: element.offsetWidth,
-				height: element.offsetHeight
-			});
-			boundTop = $(document).scrollTop();
-			boundLeft = $(document).scrollLeft();
-			boundRight = boundLeft + $(window).width();
-			boundBottom = boundTop + $(window).height();
-			elementAbove = {
-				top: pos.top - actualHeight,
-				left: pos.left + pos.width / 2 - actualWidth / 2
-			};
-			elementBelow = {
-				top: pos.top + pos.height,
-				left: pos.left + pos.width / 2 - actualWidth / 2
-			};
-			elementLeft = {
-				top: pos.top + pos.height / 2 - actualHeight / 2,
-				left: pos.left - actualWidth
-			};
-			elementRight = {
-				top: pos.top + pos.height / 2 - actualHeight / 2,
-				left: pos.left + pos.width
-			};
-			above = isWithinBounds(elementAbove);
-			below = isWithinBounds(elementBelow);
-			left = isWithinBounds(elementLeft);
-			right = isWithinBounds(elementRight);
-			if (above) {
-				return "top";
+	// Tooltip maximal dimensions for intelligent placement:
+	var actualWidth = 200;
+	var actualHeight = 100;
+	// Tooltip smart tooltip placement function:
+	var tooltipPlacer = function(tip, element) {
+		var $element, above, below, boundBottom, boundLeft, boundRight, boundTop, elementAbove, elementBelow, elementLeft, elementRight, isWithinBounds, left, pos, right;
+		isWithinBounds = function(elementPosition) {
+			return boundTop < elementPosition.top && boundLeft < elementPosition.left && boundRight > (elementPosition.left + actualWidth) && boundBottom > (elementPosition.top + actualHeight);
+		};
+		$element = $(element);
+		pos = $.extend({}, $element.offset(), {
+			width: element.offsetWidth,
+			height: element.offsetHeight
+		});
+		boundTop = $(document).scrollTop();
+		boundLeft = $(document).scrollLeft();
+		boundRight = boundLeft + $(window).width();
+		boundBottom = boundTop + $(window).height();
+		elementAbove = {
+			top: pos.top - actualHeight,
+			left: pos.left + pos.width / 2 - actualWidth / 2
+		};
+		elementBelow = {
+			top: pos.top + pos.height,
+			left: pos.left + pos.width / 2 - actualWidth / 2
+		};
+		elementLeft = {
+			top: pos.top + pos.height / 2 - actualHeight / 2,
+			left: pos.left - actualWidth
+		};
+		elementRight = {
+			top: pos.top + pos.height / 2 - actualHeight / 2,
+			left: pos.left + pos.width
+		};
+		above = isWithinBounds(elementAbove);
+		below = isWithinBounds(elementBelow);
+		left = isWithinBounds(elementLeft);
+		right = isWithinBounds(elementRight);
+		if (above) {
+			return "top";
+		} else {
+			if (below) {
+				return "bottom";
 			} else {
-				if (below) {
-					return "bottom";
+				if (left) {
+					return "left";
 				} else {
-					if (left) {
-						return "left";
+					if (right) {
+						return "right";
 					} else {
-						if (right) {
-							return "right";
-						} else {
-							return "right";
-						}
+						return "right";
 					}
 				}
 			}
-		};
+		}
+	};
 
+	var frontEditing = function () {
 		// Modules edit icons:
 
 		$('.jmoddiv').on({
@@ -110,7 +109,7 @@
 				// Get module editing URL and tooltip for module edit:
 				var moduleEditUrl = $(this).data('jmodediturl');
 				var moduleTip = $(this).data('jmodtip');
-                var moduleTarget = $(this).data('target');
+				var moduleTarget = $(this).data('target');
 
 				// Stop timeout on previous tooltip and remove it:
 				$('body>.btn.jmodedit').clearQueue().tooltip('destroy').remove();
@@ -179,22 +178,24 @@
 
 				$('body>div.popover')
 					.on({
-					mouseenter: function() {
-						if (activePopover) {
-							$(activePopover).clearQueue();
+						mouseenter: function() {
+							if (activePopover) {
+								$(activePopover).clearQueue();
+							}
+						},
+						mouseleave: function() {
+							if (activePopover) {
+								$(activePopover).popover('hide');
+							}
 						}
-					},
-					mouseleave: function() {
-						if (activePopover) {
-							$(activePopover).popover('hide');
-						}
-					}
-				})
-				.find('a.jfedit-menu').tooltip({"container": false, html: true, placement: 'bottom'});
+					})
+					.find('a.jfedit-menu').tooltip({"container": false, html: true, placement: 'bottom'});
 			},
 			mouseleave: function() {
 				$(this).delay(1500).queue(function(next) { $(this).popover('hide'); next() });
 			}
 		});
-	});
+	};
+
+	$(document).ready(frontEditing);
 })(jQuery);
